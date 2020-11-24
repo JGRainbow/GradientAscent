@@ -1,17 +1,31 @@
 from numpy.testing import assert_array_equal
 import pytest
-from gradientascent.gradient import calculate_2d_gradient
-
+from gradientascent.grid import Grid
+                                     
 import test_data as data
 
 
 class TestGradient:
     
-    @pytest.mark.parametrize(*data.test_calculate_2d_gradient_success())
-    def test_calculate_2d_gradient_success(self, array, expected_result):
+    @pytest.mark.parametrize(*data.test_get_bordering_coordinates_success())
+    def test_get_bordering_coordinates_success(self, array, current_coordinate, expected_result):
         # Arrange
+        grid = Grid(array)
+
         # Act
-        gradient = calculate_2d_gradient(array)
+        bordering_coordinates = grid._get_bordering_coordinates(current_coordinate)
 
         # Assert
-        assert_array_equal(gradient, expected_result)
+        assert set(bordering_coordinates) == set(expected_result)
+
+    @pytest.mark.parametrize(*data.test_calculate_steepest_ascent_coordinate_success())
+    def test_calculate_steepest_ascent_coordinate_success(self, array, current_coordinate, expected_result):
+        # Arrange
+        grid = Grid(array)
+
+        # Act
+        steepest_ascent_coordinate = grid._calculate_steepest_ascent_coordinate(current_coordinate)
+
+        # Assert
+        assert steepest_ascent_coordinate == expected_result
+
