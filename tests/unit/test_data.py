@@ -1,5 +1,5 @@
 import numpy as np
-from gradientascent.grid import Coordinate
+from gradientascent.ascender import Coordinate
 from pytest import param
 
 
@@ -23,6 +23,12 @@ def test_get_bordering_coordinates_success():
             Coordinate(2, 2),
             [Coordinate(1, 2), Coordinate(2, 1)],
             id='bottom_right'
+        ),
+        param(
+            np.zeros((3, 3)),
+            Coordinate(1, 0),
+            [Coordinate(0, 0), Coordinate(2, 0), Coordinate(1, 1)],
+            id='central_top'
         )
     ]
     return test_variables, test_data
@@ -54,21 +60,47 @@ def test_calculate_steepest_ascent_coordinate_success():
             Coordinate(2, 2),
             Coordinate(2, 2),
             id='stay_stationary'
+        ),
+        param(
+            np.array([[0, 0, 0],
+                      [1, 2, 3],
+                      [0, 0, 0]]),
+            Coordinate(1, 1),
+            Coordinate(2, 1),
+            id='move_west_from_centre'
         )
     ]
     return test_variables, test_data
 
 
-def test_ascend_one_step_success():
-    test_variables = "array, current_coordinate, expected_result"
+def test_generate_ascent_route_success():
+    test_variables = "array, start_coordinate, expected_result"
     test_data = [
         param(
             np.array([[0, 1, 0],
-                    [0, 0, 0],
-                    [0, 0, 0]]),
+                      [0, 0, 0],
+                      [0, 0, 0]]),
             Coordinate(0, 0),
-            Coordinate(1, 0),
-            id='3x3_top_left'
+            [Coordinate(0, 0), Coordinate(1, 0)],
+            id='single_step'
+        ),
+        param(
+            np.array([[1, 2, 3],
+                      [0, 0, 4],
+                      [0, 0, 5]]),
+            Coordinate(0, 0),
+            [Coordinate(0, 0), Coordinate(1, 0), Coordinate(2, 0),
+             Coordinate(2, 1), Coordinate(2, 2)],
+             id='north_east_pass'
         )
+        # param(
+        #     np.array([[1, 2, 3],
+        #               [2, 2, 4],
+        #               [1, 1, 5]]),
+        #     Coordinate(0, 0),
+        #     [Coordinate(0, 0), Coordinate(1, 0), Coordinate(2, 0),
+        #      Coordinate(2, 1), Coordinate(2, 2)],
+        #      id='north_east_pass'
+        # ),
     ]
     return test_variables, test_data
