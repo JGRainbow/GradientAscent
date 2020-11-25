@@ -59,7 +59,7 @@ class Ascender:
 
     def __next__(self):
         if not self.index:
-            # Make sure initial coordinate is yield once
+            # Make sure initial coordinate is yielded once
             self.index += 1
             return self.current_coordinate
         next_coord = self._calculate_steepest_ascent_coordinate(self.current_coordinate)
