@@ -41,9 +41,15 @@ class AscentPlotter:
 if __name__ == '__main__':
     import numpy as np
 
-    arr = np.array([[1, 2, 3],
-                    [0, 1, 4],
-                    [7, 6, 5]])
+    def generate_gaussian_array(h, w, noise_factor=0.5):
+        x, y = np.meshgrid(np.linspace(-1, 1, h), np.linspace(-1, 1, w))
+        d = np.sqrt(x*x + y*y)
+        sigma, mu = 1.0, 0.0
+        white_noise = np.random.rand(h, w)
+        g = np.exp(-( (d - mu) ** 2 / ( 2.0 * sigma ** 2 ) ) )
+        return g + noise_factor * white_noise
+
+    arr = generate_gaussian_array(20, 20, 0.05)
     crd = Coordinate(0, 0)
     asc = Ascender(arr, crd)
     ap = AscentPlotter().animate(asc)
