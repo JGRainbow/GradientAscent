@@ -1,9 +1,9 @@
-from collections import namedtuple
+from collections import namedtuple, abc
 
 Coordinate = namedtuple('Coordinate', 'x, y')
 
 
-class Ascender:
+class Ascender(abc.Iterator):
 
     def __init__(self, array, start_coordinate):
         self.array = array
