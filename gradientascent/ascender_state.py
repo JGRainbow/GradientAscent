@@ -102,10 +102,6 @@ if __name__ == '__main__':
     import numpy as np 
     from gradientascent.utils import generate_gaussian_array
 
-    # TODO: What do we do when we make the wrong choice?
-    # a = np.array([[1, 2, 3],
-    #               [2, 2, 4],
-    #               [1, 1, 5]])
     a = generate_gaussian_array(20, 20, 0.05)
     asc = AscenderState(a, Coordinate(0, 0))
     da = DirectAscender(asc)
