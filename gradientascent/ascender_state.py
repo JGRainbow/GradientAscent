@@ -2,13 +2,14 @@ from collections import namedtuple, abc
 
 Coordinate = namedtuple('Coordinate', 'x, y')
 
-# TODO: Make this DirectAscender and create abstract base class for Ascender
-class Ascender(abc.Iterator):
 
-    def __init__(self, array, start_coordinate):
+class AscenderState:
+
+    def __init__(self, array, start_coordinate, needs_init=True):
         self.array = array
         self._shape = self.array.shape
         self._current_coordinate = start_coordinate
+        self.needs_init = needs_init
         self.index = 0
 
     @property
@@ -42,27 +43,12 @@ class Ascender(abc.Iterator):
             bordering_coordinates.append(Coordinate(current_coordinate.x + 1, current_coordinate.y))
         return bordering_coordinates
 
-    def _calculate_steepest_ascent_coordinate(self, current_coordinate: Coordinate):
-        current_height = self._get_height_of_coordinate(current_coordinate)
-        bordering_coordinates = self._get_bordering_coordinates(current_coordinate)
-        max_height = current_height
-        steepest_ascent_coordinate = current_coordinate
-        for coord in bordering_coordinates:
-            coord_height = self._get_height_of_coordinate(coord)
-            if coord_height > max_height:
-                max_height = coord_height
-                steepest_ascent_coordinate = coord
-        return steepest_ascent_coordinate
+    def start(self):
+        self.index += 1
+        self.needs_init = False
+        return self._current_coordinate
 
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        if not self.index:
-            # Make sure initial coordinate is yielded once
-            self.index += 1
-            return self.current_coordinate
-        next_coord = self._calculate_steepest_ascent_coordinate(self.current_coordinate)
+    def step_to_next(self, next_coord):
         if self.current_coordinate != next_coord:
             self.current_coordinate = next_coord
             self.index += 1
@@ -71,16 +57,60 @@ class Ascender(abc.Iterator):
             raise StopIteration
 
 
+    def calculate_steepest_ascent_coordinate(self):
+        current_height = self._get_height_of_coordinate(self.current_coordinate)
+        bordering_coordinates = self._get_bordering_coordinates(self.current_coordinate)
+        max_height = current_height
+        steepest_ascent_coordinate = self.current_coordinate
+        for coord in bordering_coordinates:
+            coord_height = self._get_height_of_coordinate(coord)
+            if coord_height > max_height:
+                max_height = coord_height
+                steepest_ascent_coordinate = coord
+        return steepest_ascent_coordinate
+
+
+class DirectAscender(abc.Iterator):
+
+    def __init__(self, ascender_state: AscenderState):
+        self.ascender_state = ascender_state
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self.ascender_state.needs_init:
+            return self.ascender_state.start()
+        else:
+            next_coord = self.ascender_state.calculate_steepest_ascent_coordinate()
+            return self.ascender_state.step_to_next(next_coord)
+
+
+class MomentumAscender(abc.Iterator):
+
+    def __init__(self, ascender_state: AscenderState):
+        self.ascender_state = ascender_state
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        pass
+
+
 if __name__ == '__main__':
     import numpy as np 
+    from gradientascent.utils import generate_gaussian_array
 
     # TODO: What do we do when we make the wrong choice?
-    a = np.array([[1, 2, 3],
-                  [2, 2, 4],
-                  [1, 1, 5]])
-    g = Ascender(a, Coordinate(0, 0))
+    # a = np.array([[1, 2, 3],
+    #               [2, 2, 4],
+    #               [1, 1, 5]])
+    a = generate_gaussian_array(20, 20, 0.05)
+    asc = AscenderState(a, Coordinate(0, 0))
+    da = DirectAscender(asc)
 
-    for c in g:
+    for c in da:
         print(c)
 
 

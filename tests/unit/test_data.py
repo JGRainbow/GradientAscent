@@ -1,6 +1,8 @@
 import numpy as np
-from gradientascent.ascender import Coordinate
+from gradientascent.ascender import Ascender, Coordinate
 from pytest import param
+
+from test_helpers import create_ascender
 
 
 def test_get_bordering_coordinates_success():
@@ -104,3 +106,20 @@ def test_generate_ascent_route_success():
         # ),
     ]
     return test_variables, test_data
+
+
+def test_create_summit_heatmap_success():
+    test_variables = "ascender, expected_result"
+    test_data = [
+        param(
+            create_ascender(np.array([[1, 2, 3],
+                                      [2, 2, 4],
+                                      [1, 1, 5]])),
+            np.array([[1, 1, 1],
+                      [1, 1, 1],
+                      [1, 1, 1]]),
+            id='all_reach_top_3x3'
+            )
+    ]
+    return test_variables, test_data
+
