@@ -6,7 +6,7 @@ from gradientascent.ascender import Ascender, Coordinate
 
 class AscentPlotter:
 
-    FPS = 2
+    FPS = 20
 
     @classmethod
     def animate(cls, ascender: Ascender):

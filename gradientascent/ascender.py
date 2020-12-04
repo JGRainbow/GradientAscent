@@ -23,6 +23,10 @@ class Ascender(abc.Iterator):
         assert 0 <= new_coordinate.y and new_coordinate.y < h, f'New coordinate y position ({new_coordinate.y}) not in grid.'
         self._current_coordinate = new_coordinate
 
+    def reset_start_coordinate(self, new_start_coordinate):
+        self.index = 0
+        self.current_coordinate = new_start_coordinate
+
     def __str__(self):
         return f'Ascender(grid_shape={self.array.shape}, current_position={self.current_coordinate})'
 
@@ -73,12 +77,16 @@ class Ascender(abc.Iterator):
 
 if __name__ == '__main__':
     import numpy as np 
+    from gradientascent.utils import generate_gaussian_array
 
-    # TODO: What do we do when we make the wrong choice?
-    a = np.array([[1, 2, 3],
-                  [2, 2, 4],
-                  [1, 1, 5]])
+    a = generate_gaussian_array(20, 20, 0.05)
     g = Ascender(a, Coordinate(0, 0))
+    g.reset_start_coordinate(Coordinate(18,15))
+
+    for c in g:
+        print(c)
+
+    g.reset_start_coordinate(Coordinate(0,0))
 
     for c in g:
         print(c)

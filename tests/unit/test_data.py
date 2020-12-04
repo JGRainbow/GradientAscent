@@ -112,9 +112,9 @@ def test_create_summit_heatmap_success():
     test_variables = "ascender, expected_result"
     test_data = [
         param(
-            create_ascender(np.array([[1, 2, 3],
-                                      [2, 2, 4],
-                                      [1, 1, 5]])),
+            create_ascender(np.array([[1, 2, 1],
+                                      [2, 3, 4],
+                                      [1, 2, 5]])),
             np.array([[1, 1, 1],
                       [1, 1, 1],
                       [1, 1, 1]]),
@@ -123,3 +123,45 @@ def test_create_summit_heatmap_success():
     ]
     return test_variables, test_data
 
+
+def test_is_visited_success():
+    test_variables = "ascender, summit_heatmap, coordinate, expected_result"
+    test_data = [
+        param(
+            create_ascender(np.array([[1, 2, 3],
+                                      [2, 2, 4],
+                                      [1, 1, 5]])),
+            np.array([[-1, -1, -1],
+                      [-1, -1, -1],
+                      [0, -1, -1]]),
+            Coordinate(0, 2),
+            True,
+            id='bottom_left_visited'
+        ),
+        param(
+            create_ascender(np.array([[1, 2, 3],
+                                      [2, 2, 4],
+                                      [1, 1, 5]])),
+            np.array([[-1, -1, -1],
+                      [-1, -1, -1],
+                      [0, -1, -1]]),
+            Coordinate(2, 2),
+            False,
+            id='bottom_right_unvisited'
+        )
+    ]
+    return test_variables, test_data
+
+
+def test_get_summit_coord_success():
+    test_variables = "ascender, expected_result"
+    test_data = [
+        param(
+            create_ascender(np.array([[1, 2, 3],
+                                      [2, 2, 4],
+                                      [8, 1, 5]])),
+            Coordinate(0, 2),
+            id='summit_bottom_left'
+        )
+    ]
+    return test_variables, test_data

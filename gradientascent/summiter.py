@@ -24,6 +24,23 @@ class Summitter:
         for coord in trace:
             self.summit_heatmap[coord.y][coord.x] = new_state
 
+    def _get_next_unvisited_coord(self):
+        try:
+            cy, cx =  np.argwhere(self.summit_heatmap == -1)[0]
+            return Coordinate(cx, cy)
+        except IndexError:
+            return None
+
+    def _is_visited(self, coordinate):
+        return self.summit_heatmap[coordinate.y][coordinate.x] >= 0
+
+    def _get_trace_to_visited_coordinate(self, next_unvisited_coord):
+        self.ascender.reset_start_coordinate(next_unvisited_coord)
+        trace = [coord for coord in self.ascender if not self._is_visited(coord)]
+        last_coord = self.ascender.current_coordinate
+        value = self.summit_heatmap[last_coord.y][last_coord.x] 
+        return trace, max(value, 0)
+
     def create_summit_heatmap(self):
         # 0. Find summit coordinate and mark as 1
         # 1. Get next unvisited coordinate (-1)
@@ -32,7 +49,16 @@ class Summitter:
             # b. If next visited coordinate is 1, then mark all trace coordinates a 1
         # 3. Terminate when no remaining unvisited coordinates (-1)
 
-        return self.summit_heatmap + 1
+        self.summit_heatmap[self.summit_coord.y][self.summit_coord.x] = 1
+
+        while True:
+            next_unvisited_coord = self._get_next_unvisited_coord()
+            if not next_unvisited_coord:
+                break
+            trace, value = self._get_trace_to_visited_coordinate(next_unvisited_coord)
+            self._mark_trace_state(trace, value)
+
+        return self.summit_heatmap
 
     def plot_summit_heatmap(self):
         summit_heatmap = self.create_summit_heatmap()
@@ -46,11 +72,14 @@ class Summitter:
 
 if __name__ == '__main__':
     from utils import generate_gaussian_array
+    from gradientascent.ascent_plotter import AscentPlotter
 
-    arr = generate_gaussian_array(20, 10, 0.05)
-    crd = Coordinate(0, 0)
+    arr = generate_gaussian_array(99, 99, 1e-3)
+    crd = Coordinate(5, 24)
     asc = Ascender(arr, crd)
+    AscentPlotter.animate(asc)
     smt = Summitter(asc)
     c = smt.summit_coord
-    print(c)
     smt.plot_summit_heatmap()
+    print(smt.summit_heatmap)
+
