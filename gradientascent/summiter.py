@@ -74,10 +74,11 @@ if __name__ == '__main__':
     from utils import generate_gaussian_array
     from gradientascent.ascent_plotter import AscentPlotter
 
-    arr = generate_gaussian_array(99, 99, 1e-3)
-    crd = Coordinate(5, 24)
+    arr = generate_gaussian_array(200, 200, 1e-3)
+    crd = Coordinate(5, 44)
     asc = Ascender(arr, crd)
     AscentPlotter.animate(asc)
+
     smt = Summitter(asc)
     c = smt.summit_coord
     smt.plot_summit_heatmap()
