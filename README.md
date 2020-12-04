@@ -21,6 +21,8 @@ venv/Scripts/activate
 ## Usage
 
 Run ```summitter.py``` to see an example animation and a heatmap of all the cells that will make a full ascent to the global summit. 
+
+
 ![](example.gif)
 
 ## Contributing
