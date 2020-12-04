@@ -1,1 +1,3 @@
 # GradientAscent
+
+![](example.gif)
