@@ -1,6 +1,6 @@
 # Gradient Ascent
 
-Gradient Ascent is a library for modelling different gradient ascent strategies on a 2d grid representing an elevation map. 
+Gradient Ascent is a library for modelling different gradient ascent strategies on a 2-d grid representing an elevation map. 
 
 ## Set up
 
