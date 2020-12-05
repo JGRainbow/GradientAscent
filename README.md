@@ -14,8 +14,8 @@ Create and activate a new python virtual environment before installing the depen
 
 ```bash
 python -m venv venv
-pip install -r requirements.txt
 venv/Scripts/activate
+pip install -r requirements.txt
 ```
 
 ## Usage
