@@ -6,14 +6,17 @@ class DigitalElevationModel:
 
     def __init__(self, file_path):
         self.file_path = file_path
-        self.array = imread(self.file_path)
+        self._array = imread(self.file_path)
 
     @classmethod
     def from_file_path(cls, file_path):
         return cls(file_path)
 
+    def get_array(self):
+        return self._array
+
     def display(self):
-        plt.imshow(self.array, cmap='winter')
+        plt.imshow(self._array, cmap='winter')
         plt.axis('off')
         plt.show()
     

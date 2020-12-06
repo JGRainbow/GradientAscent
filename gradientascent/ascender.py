@@ -1,4 +1,6 @@
-from collections import namedtuple, abc
+from collections import abc, namedtuple
+
+import numpy as np
 
 Coordinate = namedtuple('Coordinate', 'x, y')
 
@@ -9,6 +11,9 @@ class Ascender(abc.Iterator):
         self.array = array
         self._shape = self.array.shape
         self._current_coordinate = start_coordinate
+        self._current_height = array[self.current_coordinate.y][self.current_coordinate.x]
+        self.summit_height = np.max(self.array)
+        self.min_height = np.min(self.array)
         self.index = 0
 
     @property
@@ -22,6 +27,11 @@ class Ascender(abc.Iterator):
         assert 0 <= new_coordinate.x and new_coordinate.x < w, f'New coordinate x position ({new_coordinate.x}) not in grid.'
         assert 0 <= new_coordinate.y and new_coordinate.y < h, f'New coordinate y position ({new_coordinate.y}) not in grid.'
         self._current_coordinate = new_coordinate
+        self._current_height = self._get_height_of_coordinate(new_coordinate)
+
+    @property
+    def current_height(self):
+        return self._current_height
 
     def reset_start_coordinate(self, new_start_coordinate):
         self.index = 0
@@ -76,7 +86,8 @@ class Ascender(abc.Iterator):
 
 
 if __name__ == '__main__':
-    import numpy as np 
+    import numpy as np
+
     from gradientascent.utils import generate_gaussian_array
 
     a = generate_gaussian_array(20, 20, 0.05)
